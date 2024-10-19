@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="init-db" author="polina">
+        <sql>
+            Create table if not exists users (
+                         id bigserial PRIMARY KEY,
+                         username varchar NOT NULL,
+                         password varchar NOT NULL
+            );
+
+            Create table if not exists task (
+                                                 id bigserial PRIMARY KEY,
+                                                 text varchar NOT NULL,
+                                                 isDone boolean NOT NULL DEFAULT FALSE,
+                                                 userId BIGINT,
+                                                 CONSTRAINT fk_user
+                                                    FOREIGN KEY (userId)
+                                                    REFERENCES users(id)
+                );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
