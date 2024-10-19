@@ -58,7 +58,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getAllTasks(Long userId) {
-        List<Task> tasks = taskRepository.findAllTasks(userId);
+        List<Task> tasks = taskRepository.findByUser_Id(userId);
         return tasks.stream()
                 .map(this::convertEntityToDto)
                 .collect(Collectors.toList());
