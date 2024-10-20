@@ -17,11 +17,11 @@ import java.util.List;
 public class UserRestController {
     private final UserServiceImpl userService;
 
-    @PostMapping("/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@RequestBody @Valid UserCreateDto userCreateDto) {
-        return userService.createUser(userCreateDto);
-    }
+//    @PostMapping("/create")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public UserDto createUser(@RequestBody @Valid UserCreateDto userCreateDto) {
+//        return userService.createUser(userCreateDto);
+//    }
 
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {

@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface UserService {
 
     UserDto getUserById(Long id);
+    UserDto getUserByUsername(String username);
 
     UserDto createUser(UserCreateDto userCreateDto);
 
