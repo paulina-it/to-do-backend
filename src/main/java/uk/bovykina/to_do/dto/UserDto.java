@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class UserDto {
-    @Id
     private Long id;
     private String username;
 }

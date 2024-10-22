@@ -42,11 +42,16 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByUsername(userCreateDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username already exists.");
         }
+        // Create the User object and set properties
         User user = new User();
         user.setUsername(userCreateDto.getUsername());
         user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
 
-        return convertEntityToDto(user);
+        // 🌟 Save the user to generate the ID
+        User savedUser = userRepository.save(user);
+
+        // Convert the saved entity to DTO
+        return convertEntityToDto(savedUser);
     }
 
     @Override
