@@ -45,7 +45,7 @@ public class SecurityConfig {
 //                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout")) // Custom logout URL
 //                        .permitAll()
 //                );
-//                .userDetailsService(customUserDetailsService)
+                .userDetailsService(customUserDetailsService)
                 .httpBasic(withDefaults());
 
         return http.build();
