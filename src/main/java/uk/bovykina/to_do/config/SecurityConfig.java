@@ -31,22 +31,22 @@ public class SecurityConfig {
                 .cors(withDefaults()) // Enable CORS with default configuration
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow all OPTIONS requests
-                        .requestMatchers("/auth/signup").permitAll() // Allow public access to specific endpoints
+                        .requestMatchers("/auth/signup", "/auth/login").permitAll() // Allow public access to specific endpoints
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Use Stateless session policy
                 )
-                .formLogin(form -> form
-                        .loginProcessingUrl("/auth/login") // Custom login URL
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout")) // Custom logout URL
-                        .permitAll()
-                );
+//                .formLogin(form -> form
+//                        .loginProcessingUrl("/auth/login") // Custom login URL
+//                        .permitAll()
+//                )
+//                .logout(logout -> logout
+//                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout")) // Custom logout URL
+//                        .permitAll()
+//                );
 //                .userDetailsService(customUserDetailsService)
-//                .httpBasic(withDefaults());
+                .httpBasic(withDefaults());
 
         return http.build();
     }
