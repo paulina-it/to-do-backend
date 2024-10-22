@@ -14,5 +14,4 @@ public class UserDto {
     @Id
     private Long id;
     private String username;
-    private String password;
 }

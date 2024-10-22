@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
                 .userDetailsService(customUserDetailsService)
+                .formLogin(withDefaults())
                 .httpBasic(withDefaults());
 
         return http.build();
