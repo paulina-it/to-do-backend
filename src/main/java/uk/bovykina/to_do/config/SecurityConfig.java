@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import uk.bovykina.to_do.security.CustomUserDetailsService;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -25,15 +26,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(withDefaults())
+                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+                .cors(withDefaults()) // Enable CORS with default configuration
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow all OPTIONS requests (e.g., CORS preflight)
-                        .requestMatchers("/auth/signup", "/auth/login").permitAll() // Allow public access to signup and login endpoints
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow all OPTIONS requests
+                        .requestMatchers("/auth/signup").permitAll() // Allow public access to specific endpoints
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
-                .userDetailsService(customUserDetailsService)
-                .httpBasic(withDefaults());
+                .formLogin(form -> form
+                        .loginProcessingUrl("/auth/login") // Custom login URL
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout")) // Custom logout URL
+                        .permitAll()
+                );
+//                .userDetailsService(customUserDetailsService)
+//                .httpBasic(withDefaults());
 
         return http.build();
     }
