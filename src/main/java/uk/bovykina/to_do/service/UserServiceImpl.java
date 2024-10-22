@@ -10,7 +10,6 @@ import uk.bovykina.to_do.model.User;
 import uk.bovykina.to_do.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserCreateDto userCreateDto) {
+        if (userRepository.findByUsername(userCreateDto.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
         User user = userRepository.save(convertCreateDtoToEntity(userCreateDto));
         return convertEntityToDto(user);
     }
@@ -55,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new  UserNotFoundException("User not found with ID: " + id); // Consider using a custom exception
+            throw new UserNotFoundException("User not found with ID: " + id); // Consider using a custom exception
         }
         userRepository.deleteById(id);
     }
