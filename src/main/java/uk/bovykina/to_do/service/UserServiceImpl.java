@@ -1,6 +1,7 @@
 package uk.bovykina.to_do.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.bovykina.to_do.dto.UserCreateDto;
 import uk.bovykina.to_do.dto.UserDto;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public UserDto getUserById(Long id) {
@@ -38,7 +41,10 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByUsername(userCreateDto.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Username already exists.");
         }
-        User user = userRepository.save(convertCreateDtoToEntity(userCreateDto));
+        User user = new User();
+        user.setUsername(userCreateDto.getUsername());
+        user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
+
         return convertEntityToDto(user);
     }
 
