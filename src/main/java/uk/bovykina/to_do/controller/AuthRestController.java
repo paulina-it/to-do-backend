@@ -16,7 +16,7 @@ import uk.bovykina.to_do.service.UserServiceImpl;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthRestController {
-    private final AuthenticationManager authenticationManager;
+//    private final AuthenticationManager authenticationManager;
     private final UserServiceImpl userService;
 
 //    @PostMapping("/login")
