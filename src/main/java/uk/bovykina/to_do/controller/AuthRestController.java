@@ -4,8 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -19,24 +17,17 @@ import uk.bovykina.to_do.service.UserServiceImpl;
 @RequestMapping("/auth")
 public class AuthRestController {
     private final UserServiceImpl userService;
-    private final AuthenticationManager authenticationManager;
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserCreateDto loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername(),
-                            loginRequest.getPassword()
-                    )
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDto userDto = userService.getUserByUsername(loginRequest.getUsername());
-            return ResponseEntity.ok(userDto);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+    public ResponseEntity<UserDto> login() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getName())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
+
+        String username = authentication.getName();
+        UserDto userDto = userService.getUserByUsername(username);
+        return ResponseEntity.ok(userDto);
     }
 
     @PostMapping("/signup")
