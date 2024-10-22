@@ -11,6 +11,7 @@ import uk.bovykina.to_do.model.User;
 import uk.bovykina.to_do.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +48,16 @@ public class UserServiceImpl implements UserService {
 
         return convertEntityToDto(user);
     }
+
+    @Override
+    public UserDto login(String username, String password) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+            return convertEntityToDto(user.get());
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    };
 
     @Override
     public UserDto updateUser(UserUpdateDto userUpdateDto) {

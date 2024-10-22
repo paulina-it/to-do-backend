@@ -20,4 +20,6 @@ public interface UserService {
     void deleteUser(Long id);
 
     List<UserDto> getAllUsers();
+
+    UserDto login(String username, String password);
 }
