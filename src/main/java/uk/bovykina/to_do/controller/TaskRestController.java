@@ -18,11 +18,11 @@ import java.util.List;
 public class TaskRestController {
     private final TaskService taskService;
 
+
     @GetMapping()
-    public List<TaskDto> getAllTasks(Long userId) {
+    public List<TaskDto> getAllTasks(@RequestParam Long userId) {
         return taskService.getAllTasks(userId);
     }
-
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDto createTask(@RequestBody @Valid TaskCreateDto taskCreateDto) {

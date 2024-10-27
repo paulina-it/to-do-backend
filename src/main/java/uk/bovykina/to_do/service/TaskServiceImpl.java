@@ -58,11 +58,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getAllTasks(Long userId) {
-        List<Task> tasks = taskRepository.findByUser_Id(userId);
-        return tasks.stream()
-                .map(this::convertEntityToDto)
+        return taskRepository.findByUser_Id(userId).stream()
+                .map(task -> new TaskDto(task.getId(), task.getText(), task.isDone()))
                 .collect(Collectors.toList());
     }
+
 
     private Task convertDtoToEntity(TaskCreateDto taskCreateDto) {
         // Retrieve the user entity using userService
@@ -87,7 +87,7 @@ public class TaskServiceImpl implements TaskService {
                 .id(task.getId())
                 .text(task.getText())
                 .isDone(task.isDone()) // Include the isDone status in the DTO
-                .userId(task.getUser().getId())
+//                .userId(task.getUser().getId())
                 .build();
     }
 }

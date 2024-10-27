@@ -14,5 +14,5 @@ public class TaskDto {
     private Long id;
     private String text;
     private boolean isDone;
-    private Long userId;
+//    private Long userId;
 }
