@@ -3,15 +3,16 @@ package uk.bovykina.to_do.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uk.bovykina.to_do.dto.LoginResponse;
 import uk.bovykina.to_do.dto.UserCreateDto;
 import uk.bovykina.to_do.dto.UserDto;
 import uk.bovykina.to_do.dto.UserUpdateDto;
 import uk.bovykina.to_do.exception.UserNotFoundException;
 import uk.bovykina.to_do.model.User;
 import uk.bovykina.to_do.repository.UserRepository;
+import uk.bovykina.to_do.security.JwtUtil;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
 
     @Override
@@ -54,15 +56,19 @@ public class UserServiceImpl implements UserService {
         return convertEntityToDto(savedUser);
     }
 
-    @Override
-    public UserDto login(String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            return convertEntityToDto(user.get());
-        } else {
+    public LoginResponse login(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
-    };
+
+        String token = jwtUtil.generateToken(username);
+        UserDto userDto = convertEntityToDto(user); // Convert User to UserDto
+
+        return new LoginResponse("Bearer " + token, userDto);
+    }
 
     @Override
     public UserDto updateUser(UserUpdateDto userUpdateDto) {

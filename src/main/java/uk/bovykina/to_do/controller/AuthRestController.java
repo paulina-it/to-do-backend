@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.bovykina.to_do.dto.LoginRequest;
+import uk.bovykina.to_do.dto.LoginResponse;
 import uk.bovykina.to_do.dto.UserCreateDto;
 import uk.bovykina.to_do.dto.UserDto;
 import uk.bovykina.to_do.service.UserServiceImpl;
@@ -40,12 +41,12 @@ public class AuthRestController {
 //    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request) {
         try {
-            UserDto user = userService.login(request.getUsername(), request.getPassword());
-            return ResponseEntity.ok(user);
+            LoginResponse response = userService.login(request.getUsername(), request.getPassword());
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(null); // Adjust based on error handling needs
         }
     }
 

@@ -1,12 +1,11 @@
 package uk.bovykina.to_do.service;
 
+import uk.bovykina.to_do.dto.LoginResponse;
 import uk.bovykina.to_do.dto.UserCreateDto;
 import uk.bovykina.to_do.dto.UserDto;
 import uk.bovykina.to_do.dto.UserUpdateDto;
-import uk.bovykina.to_do.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
@@ -21,5 +20,5 @@ public interface UserService {
 
     List<UserDto> getAllUsers();
 
-    UserDto login(String username, String password);
+    LoginResponse login(String username, String password);
 }
