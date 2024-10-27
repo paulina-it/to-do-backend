@@ -30,31 +30,31 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow all OPTIONS requests
-                        .requestMatchers("/auth/signup", "/auth/login", "/auth/status").permitAll() // Allow public access to specific endpoints
-                        .anyRequest().authenticated() // All other endpoints require authentication
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow all OPTIONS requests for preflight
+                        .requestMatchers("/auth/signup", "/auth/login", "/auth/status").permitAll() // Allow access to auth endpoints
+                        .anyRequest().authenticated() // Protect other endpoints
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Allow your frontend origin
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Allow frontend origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow HTTP methods
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With")); // Allow headers
-        configuration.setAllowCredentials(true); // Enable credentials if needed
+        configuration.setAllowCredentials(true); // Allow credentials if needed
+        configuration.setExposedHeaders(Arrays.asList("Authorization")); // Expose Authorization header to the frontend
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply configuration to all routes
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

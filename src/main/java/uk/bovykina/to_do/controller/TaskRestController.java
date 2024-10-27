@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
-//@SecurityRequirement(name = "library-users")
 public class TaskRestController {
     private final TaskService taskService;
 

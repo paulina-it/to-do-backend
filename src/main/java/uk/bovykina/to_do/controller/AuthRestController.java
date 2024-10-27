@@ -32,20 +32,21 @@ public class AuthRestController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
         try {
             LoginResponse response = userService.login(request.getUsername(), request.getPassword());
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); // Adjust based on error handling needs
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserCreateDto userCreateDto) {
         try {
-            UserDto newUser = userService.createUser(userCreateDto);
-            return ResponseEntity.ok(newUser);
+            userService.createUser(userCreateDto);
+            LoginResponse response = userService.login(userCreateDto.getUsername(), userCreateDto.getPassword());
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
