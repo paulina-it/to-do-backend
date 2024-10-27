@@ -25,8 +25,10 @@ public class AuthRestController {
         if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
             return ResponseEntity.status(401).body("User not authenticated");
         }
+        String username = authentication.getName();
+        UserDto userDto = userService.getUserByUsername(username);
 
-        return ResponseEntity.ok(authentication.getPrincipal());
+        return ResponseEntity.ok(userDto);
     }
 
     @PostMapping("/login")
