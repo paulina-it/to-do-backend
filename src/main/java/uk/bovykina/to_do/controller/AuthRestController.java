@@ -3,10 +3,9 @@ package uk.bovykina.to_do.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import uk.bovykina.to_do.dto.LoginRequest;
 import uk.bovykina.to_do.dto.LoginResponse;
 import uk.bovykina.to_do.dto.UserCreateDto;
@@ -17,28 +16,18 @@ import uk.bovykina.to_do.service.UserServiceImpl;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthRestController {
-//    private final AuthenticationManager authenticationManager;
     private final UserServiceImpl userService;
 
-//    @PostMapping("/login")
-//    public ResponseEntity<UserDto> login(@RequestBody @Valid UserCreateDto loginRequest) {
-//        try {
-//            // Authenticate the user
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-//
-//            // Set the authentication in the SecurityContext
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//            // Retrieve the authenticated user's details
-//            String username = authentication.getName();
-//            UserDto userDto = userService.getUserByUsername(username);
-//
-//            return ResponseEntity.ok(userDto);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//    }
+    @GetMapping("/status")
+    public ResponseEntity<?> checkAuthStatus() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(401).body("User not authenticated");
+        }
+
+        return ResponseEntity.ok(authentication.getPrincipal());
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest request) {
@@ -50,11 +39,6 @@ public class AuthRestController {
         }
     }
 
-    //    @PostMapping("/signup")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public UserDto createUser(@RequestBody @Valid UserCreateDto userCreateDto) {
-//        return userService.createUser(userCreateDto);
-//    }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserCreateDto userCreateDto) {
         try {
