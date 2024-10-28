@@ -28,6 +28,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
+        System.out.println("Processing CORS preflight request: " + request.getMethod() + " " + request.getRequestURI());
+
         final String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

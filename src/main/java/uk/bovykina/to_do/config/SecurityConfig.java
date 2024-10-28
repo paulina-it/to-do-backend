@@ -40,13 +40,12 @@ public class SecurityConfig {
 
         return http.build();
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://to-do-react-theta-virid.vercel.app")); // Allow frontend origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow HTTP methods
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With")); // Allow headers
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
         configuration.setAllowCredentials(true); // Allow credentials if needed
         configuration.setExposedHeaders(Arrays.asList("Authorization")); // Expose Authorization header to the frontend
 
@@ -54,6 +53,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
