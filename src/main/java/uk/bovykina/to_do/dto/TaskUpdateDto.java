@@ -14,4 +14,14 @@ public class TaskUpdateDto {
     private Long id;
     private String text;
     private boolean isDone;
+
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", isDone=" + isDone +
+                '}';
+    }
 }

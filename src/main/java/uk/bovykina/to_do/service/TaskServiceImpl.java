@@ -1,13 +1,15 @@
 package uk.bovykina.to_do.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.bovykina.to_do.dto.TaskCreateDto;
 import uk.bovykina.to_do.dto.TaskDto;
 import uk.bovykina.to_do.dto.TaskUpdateDto;
 import uk.bovykina.to_do.dto.UserDto;
 import uk.bovykina.to_do.exception.TaskNotFoundException;
-import uk.bovykina.to_do.exception.UserNotFoundException;
 import uk.bovykina.to_do.model.Task;
 import uk.bovykina.to_do.model.User;
 import uk.bovykina.to_do.repository.TaskRepository;
@@ -21,7 +23,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UserService userService; // Injected UserService
-
+    @Autowired
+    private EntityManager entityManager;
     @Override
     public TaskDto getTaskById(Long taskId) {
         Task task = taskRepository.findById(taskId)
@@ -36,14 +39,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public TaskDto updateTask(TaskUpdateDto taskUpdateDto) {
         Task task = taskRepository.findById(taskUpdateDto.getId())
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with ID: " + taskUpdateDto.getId()));
-
+        System.out.println("Original Task: " + task.toString());
+        System.out.println("UpdateDto Task: " + taskUpdateDto.toString());
         task.setText(taskUpdateDto.getText());
-        task.setDone(taskUpdateDto.isDone());
 
-        return convertEntityToDto(taskRepository.save(task));
+        task.setDone(taskUpdateDto.isDone());    // Set the desired value
+
+
+        taskRepository.save(task); // Save the task
+
+        task = taskRepository.findById(taskUpdateDto.getId()).orElseThrow();
+        System.out.println("Reloaded Task After Save: " + task);
+
+        return convertEntityToDto(task);
     }
 
     @Override
@@ -74,12 +86,14 @@ public class TaskServiceImpl implements TaskService {
                 .user(user)
                 .build();
     }
+
     private User convertDtoToUser(UserDto userDto) {
         return User.builder()
                 .id(userDto.getId()) // Ensure to map the ID and other relevant fields
                 .username(userDto.getUsername())
                 .build();
     }
+
     private TaskDto convertEntityToDto(Task task) {
         return TaskDto.builder()
                 .id(task.getId())

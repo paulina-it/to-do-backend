@@ -32,6 +32,7 @@ public class TaskRestController {
 
     @PutMapping("/update")
     public TaskDto updateTask(@RequestBody TaskUpdateDto taskUpdateDto) {
+        System.out.println("INCOMING: "+taskUpdateDto);
         return taskService.updateTask(taskUpdateDto);
     }
 
