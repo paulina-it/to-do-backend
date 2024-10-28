@@ -22,6 +22,4 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     LoginResponse login(String username, String password);
-
-    UserDetails loadUserByUsername(String username);
 }
