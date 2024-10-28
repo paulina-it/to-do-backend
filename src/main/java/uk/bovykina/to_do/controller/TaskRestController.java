@@ -26,6 +26,7 @@ public class TaskRestController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDto createTask(@RequestBody @Valid TaskCreateDto taskCreateDto) {
+        System.out.println("Received Task Create Request: " + taskCreateDto);
         return taskService.createTask(taskCreateDto);
     }
 

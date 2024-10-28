@@ -40,11 +40,9 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findById(taskUpdateDto.getId())
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with ID: " + taskUpdateDto.getId()));
 
-        // Update fields from DTO
         task.setText(taskUpdateDto.getText());
         task.setDone(taskUpdateDto.isDone());
 
-        // Save and return the updated task
         return convertEntityToDto(taskRepository.save(task));
     }
 
