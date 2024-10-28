@@ -22,6 +22,7 @@ public class TaskRestController {
     public List<TaskDto> getAllTasks(@RequestParam Long userId) {
         return taskService.getAllTasks(userId);
     }
+
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDto createTask(@RequestBody @Valid TaskCreateDto taskCreateDto) {

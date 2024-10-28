@@ -1,6 +1,8 @@
 package uk.bovykina.to_do.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.bovykina.to_do.dto.LoginResponse;
@@ -12,6 +14,7 @@ import uk.bovykina.to_do.model.User;
 import uk.bovykina.to_do.repository.UserRepository;
 import uk.bovykina.to_do.security.JwtUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,6 +111,17 @@ public class UserServiceImpl implements UserService {
         return UserDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
+                .build();
+    }
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .authorities(new ArrayList<>()) // Empty authorities list since roles are not used
                 .build();
     }
 }
