@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173", "https://to-do-backend-flyr.onrender.com/")
+                .allowedOrigins("http://localhost:5173", "https://to-do-backend-flyr.onrender.com/", "https://to-do-react-theta-virid.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true); // This should already be correctly set.
